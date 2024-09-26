@@ -9,7 +9,8 @@
 ---
 ### Prerequisites
 - DigitalOcean Account
-- Droplet environment with Arch linux
+- Uploaded Arch linux image in DigitalOcean Droplet
+- Droplet environment with Arch linux 
 
 ### Install doctl
 doctl is a command-line interface (CLI) tool on DigitalOcean. It allows you to interact with DigitalOcean's API from the command line, making it easier to automate tasks, and manage resources. 
@@ -30,7 +31,7 @@ sudo pacman -Sy wget
 
 	If this command shows you:
 	`:: Proceed with installation? [Y/n]`
-	Type `y` and press Enter
+	Type `y` and press **Enter**
 
 **4**. **Download the most recent version of doctl** 
 ```bash
@@ -94,14 +95,29 @@ doctl auth init --context <name>
 type your API token above.
 Then you will see:
 `Validating token... ✔`
->[!note]
->If you take too long time, it might show you an error:
+>[!Error Handling]
+>It might show you an error:
 >`Error: Unable to initialize DigitalOcean API client: access token is required. (hint: run 'doctl auth init')`
 >If so:
 >run `doctl auth init` and follow step 2 again.
 
-
 **3.Validate doctl account**
+You can check your account details by running codes below
+```bash
+doctl account get
+```
+If successful, you will see the output like:
+```bash
+Email              Droplet Limit    Email Verified    UUID              Status
+sammy@example.org  10               true              3a56c5e109737c    active
+```
+- `Email`: The identity of the account
+- `Droplet Limit`: The limits of your droplets on your account
+- `Email Verified`: Your account has been verified
+- `UUID`: The unique identifier used for internal operations in DigitalOcean
+- `Status`: The status of your account
+
+Your doctl account has successfully validated by API token.
 
 ### Create SSH keys 
 SSH keys work as a pair which one is public, another is private. Because of that feature, this provides stronger security than passwords methods. SSH keys will authenticate you when connecting to a DigitalOcean droplet.
@@ -130,14 +146,22 @@ ssh-keygen -t ed25519 -f ~/.ssh/do-key -C "your email address"
 - `-f ~/.ssh/do-key`: Specifies the filename and location to save the key.
 - `-C "your email address"`: Adds a comment to the key
 
-> [!note] Should I enter passphrase?
+> [!note] Should I create passphrase?
 > **You will be asked to:**
 > `Enter passphrase (empty for no passphrase):`
 > `Enter same passphrase again:`
 > 
-> However, if you use your own computer environment, you may want to skip it.
-> If so, **Press Enter twice.**
-> Otherwise, type `your own password`
+This will require you to type the passphrase every time you try to connect to your Arch Linux system.
+> You may want to skip setting a passphrase for convenience if:
+> - You are the only one who has access to your computer environment
+>
+**To skip**: Press **Enter** twice when prompted.
+> 
+> Consider setting a passphrase if:
+> - You want an extra layer of security
+> - You share your computer environment with others
+>
+>**To Create your own passphrase**: Enter a passphrase when prompted and then re-enter it to confirm.
 
 **4. Check SSH Keys
 ```bash
@@ -149,4 +173,31 @@ If this command shows you:
 
 Your have successfully created your SSH Keys. 
 
+
+
+### Connect SSH keys to doctl
+To connect your SSH keys to doctl, follow these steps:
+
+**1. Open Terminal**
+**2. Type ssh arch to access Arch Linux environment**
+```bash
+ssh arch
+```
+
+**3. Connect SSH key to DigitalOcean**
+```bash
+doctl compute ssh-key import do-key --public-key-file ~/.ssh/do-key.pub
+```
+- `compute`: command to work with a Droplet
+- `ssh-key import`: importing an SSH key.
+- `do-key`: This is the name of SSH key you give within DigitalOcean. 
+- `--public-key-file ~/.ssh/do-key.pub`: get public key from the path.
+
+You will see the name of key and key ID like:
+```bash
+ID          Name      FingerPrint
+43506344    do-key    db:7c:d0:4b:dc:6c:24:ac:2b:5d:c6:9e:d7:bc:d8:18
+```
+
+You have successfully connected your SSH key to DigitalOcean.
 

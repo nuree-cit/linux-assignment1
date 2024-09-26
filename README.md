@@ -78,7 +78,7 @@ Now you have successfully installed `doctl`.
 An API token is an essential security key that you to access DigitalOcean's API. It allows the `doctl` to interact with DigitalOcean programmatically.
 
 **1. Log in to the DigitalOcean control panel**
-Click here: [DigitalOcean Control Panel](https://cloud.digitalocean.com/)
+Click here: [DigitalOcean Control Panel](https://cloud.digitalocean.com/).
 
 **2. Click API in the left menu**
 ![API button](assets/screenshot1.png)

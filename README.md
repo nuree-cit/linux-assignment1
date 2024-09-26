@@ -80,7 +80,8 @@ An API token is an essential security key that you to access DigitalOcean's API.
 **1. Log in to the DigitalOcean control panel**
 Click here: [DigitalOcean Control Panel](https://cloud.digitalocean.com/).
 
-**2. Click API in the left menu**
+**1. Click API in the left menu**
+
 ![API button](assets/screenshot1.png)
 
 **3. Click Generate New Token in the middle of Personal Access Tokens area**

@@ -6,8 +6,8 @@
 2. Create an API token
 3. Use the API token to authenticate `doctl`
 4. Generate SSH keys
-5. connect SSH keys to DigitalOcean
-6. Create a `.yaml` 
+5. Upload a public key to DigitalOcean
+6. Configure the cloud-init File
 7. Create a droplet
 8. Connect the droplet to `config` 
 
@@ -173,7 +173,7 @@ sudo pacman -S openssh
 **1. Create a new SSH key pair**
 Open Arch Linux and then type and run commands below.
 ```bash
-ssh-keygen -t ed25519 -f ~/.ssh/Mykey -C "your_email"
+ssh-keygen -t ed25519 -f ~/.ssh/your_key -C "your_email"
 ```
 - `-t ed25519`: Type of encryption (ed25519).
 - `-f ~/.ssh/your_key`: Filename and location to save the key.
@@ -209,20 +209,21 @@ You will see:
 Now you have successfully created your SSH Keys. 
 
 ---
-### Connect SSH keys to DigitalOcean
-By connecting SSH keys to DigitalOcean, you will be safely connected to the DigitalOcean including your droplets. 
+### Upload a public key to DigitalOcean
+By uploading a public key to DigitalOcean, you will be safely connected to the DigitalOcean including your droplets. 
 
-**1. Connect SSH key to DigitalOcean**
+**1. Upload a public key to DigitalOcean**
 Open Arch Linux and then type and run commands below.
 ```bash
-doctl compute ssh-key import your_key --public-key-file ~/.ssh/do-key.pub
+doctl compute ssh-key import your_key --public-key-file ~/.ssh/your_key.pub
 ```
 - `compute`: Command that working with droplets
 - `ssh-key import`: Command that importing an SSH key.
 - `your_key`: This is the name of SSH key you give within DigitalOcean. 
 - `--public-key-file ~/.ssh/your_key.pub`: get public key from the path.
+- Make sure to change `"your_key"` to **the key name that you have made.**
 
-**2. Check SSH Keys are connecting**
+**2. Check the public key is connecting**
 Type and run commands below.
 ```bash
 doctl compute ssh-key list
@@ -238,61 +239,71 @@ ID          Name        FingerPrint
 Now you have successfully connected your SSH keys to DigitalOcean.
 
 ---
-### Create a `.yaml`
+### Configure the cloud-init file
+By creating and configuring cloud-init file, you can create the `YAML` file that works as a configuration file of how the droplet should be configured. DIgitalOcean droplets have cloud-init installed by default. 
 
-**1. Create yaml file**
-Type below.
+**1. Get your public key**
+To continue these steps, you need your public key that you have created earlier.
+Open Arch Linux and then type and run commands below.
 ```bash
-nvim ~/.ssh/filename.yaml
+cat ~/.ssh/your_key.pub
 ```
+- This commands will print your public key.
 
-**2. Type content inside of yaml file**
-Type below.
+**2. Create cloud-init file**
+Type and run commands below. It will open a text editor.
+```bash
+nvim ~/.ssh/cloud-config.yaml
+```
+- `nvim`: Command to open the Neovim text editor. If Neovim is not installed, you can use another editor like `vim`, or `nano`.
+- `~/.ssh/cloud-config.yaml`: This is the path where the `cloud-config.yaml` file will be created or edited. 
+- This command will open the `cloud-config.yaml` file if it is exist, otherwise create it first.
+
+**3. Type contents for the configuration**
+In the text editor, type contents below.
 ```yaml
+#cloud-config
 users:
-  - name: user-name #change me
-    primary_group: group-name #change me
-    groups: wheel
+  - name: your_user_name
     shell: /bin/bash
     sudo: ['ALL=(ALL) NOPASSWD:ALL']
     ssh-authorized-keys:
-      - ssh-ed25519 ...
+      - your_public_keys
 packages:
   - ripgrep
   - rsync
   - neovim
-  - fd
   - less
   - man-db
   - bash-completion
   - tmux
 disable_root: true
 ```
-**`users`**: This section defines user accounts to be created on the instance.
+- **`users`**: This section defines user accounts that you want to create.
+	- `- name: user-name`: Username for the new user account.  Replace `user-name` with the **actual user name you want to use**.
+	- `shell: /bin/bash`: Sets the default shell for the user.
+	- `sudo: ['ALL=(ALL) NOPASSWD:ALL']`: This command allows the user to run any command with `sudo` permission without a password.
+	- `ssh-authorized-keys`: This is the SSH public key that will be authorized for the user. Replace `your_public_keys` with the **actual public key that you have recalled in the step 1.**
+- **`packages`**: This section lists software packages that will be installed.
+	- `ripgrep`: A search tool.
+	- `rsync`: A utility for transferring and synchronizing files.
+	- `neovim`: An improved version text editor based on Vim.
+	- `less`: A feature to view the contents of files one screen at a time.
+	- `man-db`: Provides the `man` command for the manual.
+- **`disable_root: true`**: This setting disables the root user account for login.
 
-- **`- name: user-name #change me`**: Replace `user-name` with the desired username for the new user account. This account will be created during the initialization process.
-    
-- **`primary_group: group-name #change me`**: Replace `group-name` with the primary group that the user will belong to. This is often the same as the username (e.g., `user-name`).
-    
-- **`groups: wheel`**: This adds the user to the `wheel` group, which typically has administrative privileges on many Linux distributions.
-    
-- **`shell: /bin/bash`**: Specifies the default shell for the user. In this case, it sets the shell to Bash.
-    
-- **`sudo: ['ALL=(ALL) NOPASSWD:ALL']`**: This line allows the user to run any command with `sudo` without being prompted for a password. This can be convenient for automation but may pose a security risk if not managed carefully.
-    
-- **`ssh-authorized-keys`**: This specifies the SSH public keys that will be authorized for the user. The key should be replaced with the actual public key (e.g., `ssh-ed25519 AAAAC...`).
-- **`packages`**: This section lists software packages that will be installed on the instance during initialization.
+> [Note] Why should we disable a root user?
+> - Disabling the root user requires users to operate with regular user accounts instead. This improves security by forcing users to use `sudo` when they need root permissions. This is similar to User Account Control (UAC) in Windows.
 
-- **`ripgrep`**: A fast search tool.
-- **`rsync`**: A utility for efficiently transferring and synchronizing files.
-- **`neovim`**: A text editor based on Vim, improved with modern features.
-- **`fd`**: A simple, fast, and user-friendly alternative to `find`.
-- **`less`**: A terminal pager program used to view the contents of files one screen at a time.
-- **`man-db`**: Provides the man command to read manual pages for commands and applications.
-- **`bash-completion`**: Adds bash completion features, allowing for easier command-line navigation and usage.
-- **`tmux`**: A terminal multiplexer that allows users to manage multiple terminal sessions from a single window.
-- **`disable_root: true`**: This setting disables the root user account for login, enhancing security by encouraging the use of a regular user account instead. Users will typically use `sudo` to perform administrative tasks.
--
+**3. Save file**
+- To exit insert mode, Press **Esc**
+- Then type **:eq**
+- Then press **Enter**
+
+Now you have successfully configured the cloud-init file.
+
+---
+
 ### Create a droplet
 **1. Open Terminal and access Arch Linux environment**
 To access Arch Linux, type command below. 

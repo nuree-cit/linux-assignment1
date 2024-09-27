@@ -69,8 +69,7 @@ Type and run commands below.
 sudo mv ~/doctl /usr/local/bin
 ```
 
-> [!NOTE] 
-> Why do I need to move it?
+> [!NOTE] Why do I need to move it?
 > So that the system can find and run the `doctl` command from anywhere.
 > This is the same action of modifying System variables in Windows OS.
 

@@ -327,82 +327,46 @@ One of the way to get a proffer link is using Spaces Bucket. Spaces Bucket is a 
 You can create Spaces Bucket, upload your Arch linux image, and get the direct link.
 Click here to see how to create a Spaces Bucket [How to Create a Spaces Bucket](https://docs.digitalocean.com/products/spaces/how-to/create/).
 
-> Note: Why should I have a direct link of the Arch Linux image?
-> To create a droplet, DigitalOcean should be able to find the link of the custom linux image that you provide. However, without direct link that ends by file extension name (**.qcow2** in this case), DigitalOcean will not accept the file you provide, which result to an error. This is why you can't use a link from the Arch Linux page, or google drives.
+> **Note: Why should I have a direct link of the Arch Linux image?**
+> To create a droplet, DigitalOcean should be able to find the link of the custom linux image that you provide. However, DigitalOcean only support links end with some of the file extensions (**.qcow2** in this case). This is why you can't use a link from the Arch Linux page, or google drives.
 
 Once you got the direct link of your Arch Linux image, continue to next steps.
 
 **3. Upload your Arch Linux image.**
 Open Arch Linux and then type and run commands below.
 ```bash
-doctl compute image create "my_arch_linux" --image-url "https://bucketbucket-1.sfo3.digitaloceanspaces.com/Arch-Linux-x86_64-cloudimg-20240901.259602.qcow2" --region sfo3
+doctl compute image create "my_arch_linux" --image-url "your_direct_link.qcow2" --region sfo3
 ```
+- `doctl compute image create`: Commands that upload Linux image.
+- `"my_arch_linux"`: Your linux image name. Change to the **name you want to use.**
+- `--image-url`: Commands that you upload a linux image from url.
+- `"your_direct_link.qcow2"`: Make sure to replace **your actual direct link**.
+- `--region sfo3`: Specifies the region. The reason why we use this because it is the closest datacenter to end user, which is you.
 
-A drop-down menu will appear
-Click **Spaces Object Storage**
-
-
+You will see the result like:
 ```bash
-cat ~/.ssh/your_key.pub
+ID           Name             Type      Distribution    Slug    Public    Min Disk
+166365674    my_arch_linux    custom    Unknown OS              false     0
 ```
-- This commands will print your public key.
+- **ID**: `166365674` : This is the ID of your Arch Linux
+- **Name**: `my_arch_linux`: This is the name you assigned to the image.
+- **Type**: `custom`: This means that the image is a custom image created by you.
+- **Distribution**: `Unknown OS`: Since the image is a custom image, the distribution type is listed as unknown.
+- **Slug**: A slug a string represents the image. This is empty because it is a custom image.
+- **Public**: `false`: This means that only your account can access and use this image.
+- **Min Disk**: `0`: This is the minimum disk size for the disk. 0 means it has not been set a minimum disk size.
 
-**2. Create cloud-init file**
-Type and run commands below. It will open a text editor.
-```bash
-nvim ~/.ssh/cloud-config.yaml
-```
-- `nvim`: Command to open the Neovim text editor. If Neovim is not installed, you can use another editor like `vim`, or `nano`.
-- `~/.ssh/cloud-config.yaml`: This is the path where the `cloud-config.yaml` file will be created or edited. 
-- This command will open the `cloud-config.yaml` file if it is exist, otherwise create it first.
-
-**3. Type contents for the configuration**
-In the text editor, type contents below.
-```yaml
-#cloud-config
-users:
-  - name: your_user_name
-    shell: /bin/bash
-    sudo: ['ALL=(ALL) NOPASSWD:ALL']
-    ssh-authorized-keys:
-      - your_public_keys
-packages:
-  - ripgrep
-  - rsync
-  - neovim
-  - less
-  - man-db
-  - bash-completion
-  - tmux
-disable_root: true
-```
-- **`users`**: This section defines user accounts that you want to create.
-	- `- name: user-name`: Username for the new user account.  Replace `user-name` with the **actual user name you want to use**.
-	- `shell: /bin/bash`: Sets the default shell for the user.
-	- `sudo: ['ALL=(ALL) NOPASSWD:ALL']`: This command allows the user to run any command with `sudo` permission without a password.
-	- `ssh-authorized-keys`: This is the SSH public key that will be authorized for the user. Replace `your_public_keys` with the **actual public key that you have recalled in the step 1.**
-- **`packages`**: This section lists software packages that will be installed.
-	- `ripgrep`: A search tool.
-	- `rsync`: A utility for transferring and synchronizing files.
-	- `neovim`: An improved version text editor based on Vim.
-	- `less`: A feature to view the contents of files one screen at a time.
-	- `man-db`: Provides the `man` command for the manual.
-- **`disable_root: true`**: This setting disables the root user account for login.
-
-> [Note] Why should we disable a root user?
-> - Disabling the root user requires users to operate with regular user accounts instead. This improves security by forcing users to use `sudo` when they need root permissions. This is similar to User Account Control (UAC) in Windows.
-
-**3. Save file**
-- To exit insert mode, Press **Esc**
-- Then type **:eq**
-- Then press **Enter**
-
-Now you have successfully configured the cloud-init file.
+Now you have successfully uploaded your Arch Linux image to the DigitalOcean.
 
 ---
-
 ### Create a droplet
-Now you are ready to create a droplet through `doctl`. Follow these steps:
+To create a droplet through `doctl`. Follow these steps:
+
+> Note: Check your Arch Linux status before you continue.
+> Log in to the DigitalOcean control panel and check Backups & Snapshots.
+> Click here: [Backups & Snapshots](https://cloud.digitalocean.com/images/custom_images?i=e4df8b "https://cloud.digitalocean.com/images/custom_images?i=e4df8b").
+> Make sure that the Arch Linux image that you are going to use is not in **pending** status.
+> If so, wait until it is valid. It typically takes less than an hour from the uploading.
 
 **1. Find your SSH key ID**
 You need your SSH key ID to create a droplet.
@@ -415,47 +379,40 @@ You will see the result like:
 ID          Name         FingerPrint
 43506344    your_key       db:7c:d0:4b:dc:6c:24:ac:2b:5d:c6:9e:d7:bc:d8:18
 ```
+- Find the SSH key that you have created in the previous step.
 - Later in following steps, you will use your SSH key ID.
 
-**3. Find your Arch Linux image**
-You will reuse the Arch Linux image that you have uploaded through DigitalOcean webpage for the first droplet creation.
+**2. Find your Arch Linux image**
 Type and run commands below.
 ```bash
 doctl compute image list-user
 ```
 You will see the result like:
 ```bash
-ID           Name                                                Type      Distribution    Slug    Public    Min Disk
-165084665    Arch-Linux-x86_64-cloudimg-20240901.259602.qcow2    custom    Arch Linux              false     7
+ID           Name             Type      Distribution    Slug    Public    Min Disk
+166365674    my_arch_linux    custom    Unknown OS              false     0
 ```
+- Find the Arch Linux image that you have uploaded in the previous step.
+- Later in following steps, you will use your Arch Linux ID.
 
-**If you do not have Arch Linux image**
-
-
-**4. Create droplet**
-Type below.
+**3. Create droplet**
+Type and run commands below.
 ```bash
-doctl compute droplet create --image 165084665 --region sfo3 --size s-1vcpu-1gb --ssh-keys 43506344 --user-data-file ~/.ssh/droplet_setting.yaml --wait dropletName
+doctl compute droplet create --image 166365674 --region sfo3 --size s-1vcpu-1gb --ssh-keys 43506344 --user-data-file ~/.ssh/droplet_setting.yaml --wait dropletName
 ```
-- `compute droplet create`: command to create droplet
-- `dropletName`: replace this to the actual droplet name that you want to create
-- `--region sfo3`: Choose region of data center in San Francisco, SFO3
-- `--image 165084665`: The image of you want to use. Replace this to the actual Arch linux image ID from the step 3.
+- `compute droplet create`: Command to create droplet
+- `dropletName`: Replace this to the **actual droplet name that you want to create**
+- `--region sfo3`: Choose region of datacenter in San Francisco, SFO3
+- `--image 166365674`: The ID of Arch Linux image that you want to use. Replace this to the **actual Arch linux image ID from the previous step.**
 - `s`: This means a "Standard" droplet size.
 - `1vcpu-1gb`:  This means 1 virtual CPU for processing tasks and 1 GB of RAM for running applications.
-- `--ssh-keys 43506344`: Replace this to your actual SSH key from the step 2
+- `--ssh-keys 43506344`: Replace this to your **actual SSH key from the previous step**
 
-you can check your droplet created well
 
-```bash
-doctl compute droplet list
-```
+Now you have successfully created a droplet. 
 
-will show you like:
+---
 
-```bash
-ID Name Public IPv4 Private IPv4 Status 12345678 my-droplet 192.0.2.1 10.0.0.1 active
-```
 
 
 note how to connect to your droplet?

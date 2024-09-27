@@ -8,14 +8,15 @@
 4. Generate SSH keys
 5. Upload a public key to DigitalOcean
 6. Configure the cloud-init File
-7. Create a droplet
-8. Connect the droplet to `config` 
+7. Upload Arch Linux image to DigitalOcean
+8. Create a droplet
+9. Connect the droplet to SSH `config` 
 
 #### Prerequisites
 - DigitalOcean account
 - Droplet environment with Arch Linux 
 ---
-### Install `doctl`
+### 1. Install `doctl`
 `doctl` is a Command-Line Interface (CLI) tool on DigitalOcean. It allows you to interact with DigitalOcean's API from the command line, making it easier to automate tasks, and manage resources. 
 
 > **Note**: You will use the Droplet Arch Linux that you have created.
@@ -74,7 +75,7 @@ sudo mv ~/doctl /usr/local/bin
 Now you have successfully installed `doctl`.
 
 ---
-### Create an API token
+### 2. Create an API token
 An API token is an essential security key that you to access DigitalOcean's API. It allows the `doctl` to interact with DigitalOcean programmatically.
 
 **1. Log in to the DigitalOcean control panel**
@@ -111,7 +112,7 @@ Now you have successfully created and saved an API Token.
 
 ---
 
-### Use the API token to authenticate `doctl`
+### 3. Use the API token to authenticate `doctl`
 By authenticating `doctl` with your API token, you will be allowed to work on your DigitalOcean account through `doctl`.
 
 > [!Note] Get ready for your API token
@@ -157,7 +158,7 @@ sammy@example.org  10               true              3a56c5e109737c    active
 Now you have successfully authenticated `doctl` with your API Token.
 
 ---
-### Generate SSH keys 
+### 4. Generate SSH keys 
 SSH keys work as a pair which one is public, another is private. Because of that feature, this provides stronger security than passwords methods. 
 
 > [!note] On Arch Linux, `ssh-keygen` is typically included with the OpenSSH package. 
@@ -209,7 +210,7 @@ You will see the result like:
 Now you have successfully created your SSH Keys. 
 
 ---
-### Upload a public key to DigitalOcean
+### 5. Upload a public key to DigitalOcean
 By uploading a public key to DigitalOcean, you will be safely connected to the DigitalOcean including your droplets. 
 
 **1. Upload a public key to DigitalOcean**
@@ -239,7 +240,7 @@ ID          Name        FingerPrint
 Now you have successfully connected your SSH keys to DigitalOcean.
 
 ---
-### Configure the cloud-init file
+### 6. Configure the cloud-init file
 By creating and configuring cloud-init file, you can create the `YAML` file that works as a configuration file of how the droplet should be configured. DIgitalOcean droplets have cloud-init installed by default. 
 
 **1. Get your public key**
@@ -303,7 +304,7 @@ disable_root: true
 Now you have successfully configured the cloud-init file.
 
 ---
-### Upload Arch Linux image to DigitalOcean
+### 7. Upload Arch Linux image to DigitalOcean
 To continue to create a droplet with Arch Linux image, you need to upload the Arch Linux image that you will use since DigitalOcean does not provide it, but allows uploading custom image.  
 
 **1. Get an Arch Linux image.**
@@ -359,7 +360,7 @@ ID           Name             Type      Distribution    Slug    Public    Min Di
 Now you have successfully uploaded your Arch Linux image to the DigitalOcean.
 
 ---
-### Create a droplet
+### 8. Create a droplet
 To create a droplet through `doctl`. Follow these steps:
 
 > Note: Check your Arch Linux status before you continue.
@@ -408,57 +409,96 @@ doctl compute droplet create --image 166365674 --region sfo3 --size s-1vcpu-1gb 
 - `1vcpu-1gb`:  This means 1 virtual CPU for processing tasks and 1 GB of RAM for running applications.
 - `--ssh-keys 43506344`: Replace this to your **actual SSH key from the previous step**
 
+**4. Connect to the droplet**
+To connect to the droplet, you need the ip address.
+Type and run commands below.
+```bash
+doctl compute droplet list --format Name,PublicIPv4
+```
+- `doctl compute droplet list`: Command to list information of droplets.
+- `--format Name,PublicIPv4`: This will return only the names, and the ip addresses of the droplets.
+
+Then you will see the result like:
+```bash
+Name             Public IPv4
+your_droplet     137.184.86.120
+```
+
+To connect to the droplet via SSH, type and run commands below.
+```bash
+ssh -i .ssh/your_key user_name@your-droplets-ip-address
+```
+- `your_key`: Replace to **your actual private key**
+- `user_name`: Replace to the **actual user name that you have created in cloud-init file".**
+- `your-droplets-ip-address`: Replace to the **ip address that you got from the previous step.**
+
+You will see the result like:
+`[user_name@droplet_name ~]$`
+
+To exit from the droplet, type `exit` and press **Enter**
 
 Now you have successfully created a droplet. 
 
 ---
+[arch@bob ~]$ doctl compute droplet list --format Name,PublicIPv4
+Name    Public IPv4
+bob     137.184.86.120
 
-
-
-note how to connect to your droplet?
-
-After you have created a droplet you can connect to it via SSH.
 
 ```
 ssh -i .ssh/do-key arch@your-droplets-ip-address
 ```
 
-- `-i` = identity_file, the path to the private key file
-- arch = your username. The image that we used contains a regular user named "arch"
 
-To exit your SSH connect just type `exit` and press enter.
 
-### Connect the droplet to `config`
-Now we need to connect the new droplet we created with the ssh key.
-If you plan on keeping the same server for most of your class work it might be easier for you to connect to with an SSH config file. The instructions below are the same for Linux, MacOS and Windows
 
-create a "config" file(no file extension) in the ".ssh" directory in your home directory.
 
-create config in .ssh
+### 9. Connect the droplet to SSH `config`
+In the previous step, you have connected to the droplet. However, there is an easier way to connect to the droplet. By connecting a droplet to SSH `config` file, you can connect to your droplet with a simple command like `ssh droplet_name` instead of typing the full SSH command every time.
+
+**1. Create a**`config` **file**
+Open Arch Linux and then type and run commands below. It will open a text editor.
 ```bash
 nvim ~/.ssh/config
 ```
+- `config`: config file does not have file extension.
 
-Assuming you followed along with all of the steps above the only thing you have to change in the example file below is the IP address. in "HostName" replace the example IP address with the IP address of your droplet. Save the file and re-start your terminal.
-
-After you should be able to connect to your server with the command:
-
-```
-ssh arch
-```
-
-Example ssh config file:
-
-```
-Host arch
-  HostName 143.198.140.15
-  User arch
+**2. Type contents in the** `config` **file.*
+In the text editor, type contents below.
+```text
+Host your_droplet_name
+  HostName your_droplet_ip_address
+  User your_user_name
   PreferredAuthentications publickey
-  IdentityFile ~/.ssh/do-key
+  IdentityFile ~/.ssh/your_key
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
 ```
+- `Host your_droplet_name`: Replace to **your actual droplet name**
+- `User your_user_name`: Replace to **your actual user name**
+- `PreferredAuthentications publickey`: This enforces user to use SSH keys to log in.
+- `IdentityFile ~/.ssh/your_key`: Replace to **your actual private key**
+  `StrictHostKeyChecking no`: This prevents SSH from asking you to confirm the host key every time you connect.
+  `UserKnownHostsFile /dev/null`: Means that the known hosts file should be `/dev/null`, which disables host key verification.
 
+**3. Save file**
+- To exit insert mode, Press **Esc**
+- Then type **:eq**
+- Then press **Enter**
+
+**4. Check the** `config` **is working**
+Type and run commands below.
+```bash
+ssh your_droplet_name
+```
+- `your_droplet_name`: Replace to your **actual droplet name.**
+
+You will see the result like:
+`[user_name@droplet_name ~]$`
+
+To exit from the droplet, type `exit` and press **Enter**
+
+Now you have successfully connected your droplet to SSH `config` file. 
 
 ---
 
@@ -508,6 +548,3 @@ Published Feb 8, 2021
 [doctl compute droplet | DigitalOcean Documentation](https://docs.digitalocean.com/reference/doctl/reference/compute/droplet/)
 
 [doctl compute ssh | DigitalOcean Documentation](https://docs.digitalocean.com/reference/doctl/reference/compute/ssh/)
-
-
-doctl

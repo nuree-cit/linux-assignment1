@@ -18,18 +18,23 @@
 ---
 ### 1. Install `doctl`
 `doctl` is a Command-Line Interface (CLI) tool on DigitalOcean. It allows you to interact with DigitalOcean's API from the command line, making it easier to automate tasks, and manage resources. 
+#### References:
+- [doctl Command Line Interface (CLI) | DigitalOcean Documentation](https://docs.digitalocean.com/reference/doctl/)
+- [How to Install and Configure doctl | DigitalOcean Documentation](https://docs.digitalocean.com/reference/doctl/how-to/install/)
+- [doctl Release Notes :: DigitalOcean Documentation](https://docs.digitalocean.com/release-notes/doctl/)
 
 > **Note**: You will use the Droplet Arch Linux that you have created.
 
-**1. Open Terminal**
+##### 1. Open Terminal
 
-**2. Access your Arch Linux**
+##### 2. Access your Arch Linux
 Type and run commands below. 
 ```bash
 ssh arch
 ```
 - Make sure to change `arch` to **your actual Arch Linux name.**
-**3. Install** `wget`
+
+##### 3. Install `wget`
 Type and run commands below. 
 ```bash
 sudo pacman -Sy wget
@@ -42,7 +47,7 @@ sudo pacman -Sy wget
 	`:: Proceed with installation? [Y/n]`
 	Type `y` and press **Enter**
 
-**4**. **Download the most recent version of** `doctl`
+##### 4. Download the most recent version of `doctl`
 
 > **Note**: You can check the latest version here: [Release Notes](https://docs.digitalocean.com/release-notes/doctl/) 
 
@@ -53,7 +58,7 @@ wget https://github.com/digitalocean/doctl/releases/download/v1.110.0/doctl-1.11
 ```
 - This link is up to date as of 2024.09.27
 
-**5. Extract the binary**
+###### 5. Extract the binary
 Type and run commands below. 
 ```bash
 tar xf ~/doctl-1.110.0-linux-amd64.tar.gz

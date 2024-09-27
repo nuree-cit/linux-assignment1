@@ -37,7 +37,7 @@ sudo pacman -Sy wget
 - `pacman`: Command that manage software packages for Arch Linux.
 - `-Sy`: Synchronize packages up to the latest versions.
 
-	You will see:
+	You will see the result like:
 	`:: Proceed with installation? [Y/n]`
 	Type `y` and press **Enter**
 
@@ -126,7 +126,7 @@ doctl auth init --context my_project
 - Make sure to change `"my_project"` to **your actual project name**.
 
 **2. Type your API token**
-Then you will see:
+Then you will see the result like:
 `Enter your access token:    ✱ required`
 Type your API token, then Press **Enter**
 
@@ -143,7 +143,7 @@ Type and run commands below.
 doctl account get
 ```
 
-If successful, you will see the output like:
+Then you will see the result like:
 ```bash
 Email              Droplet Limit    Email Verified    UUID              Status
 sammy@example.org  10               true              3a56c5e109737c    active
@@ -202,7 +202,7 @@ Type and run commands below.
 ```bash
 ls ~/.ssh
 ```
-You will see:
+You will see the result like:
 	`your_key`: Your private key
 	`your_key.pub`: Your public key
 
@@ -230,7 +230,7 @@ doctl compute ssh-key list
 ```
 - This command will list ssh-keys that are connected.
 
-You will see like:
+You will see the result like:
 ```bash
 ID          Name        FingerPrint
 43506344    your_key    db:7c:d0:4b:dc:6c:24:ac:2b:5d:c6:9e:d7:bc:d8:18
@@ -303,36 +303,134 @@ disable_root: true
 Now you have successfully configured the cloud-init file.
 
 ---
+### Upload Arch Linux image to DigitalOcean
+To continue to create a droplet with Arch Linux image, you need to upload the Arch Linux image that you will use since DigitalOcean does not provide it, but allows uploading custom image.  
 
-### Create a droplet
-**1. Open Terminal and access Arch Linux environment**
-To access Arch Linux, type command below. 
+**1. Get an Arch Linux image.**
+Skip this step if you already have downloaded it in your local device.
+If not, Click here. [Arch Linux](https://gitlab.archlinux.org/archlinux/arch-boxes/-/packages/).
+Click **images** in the most recent row.
+![Arch image](assets/screenshot5.png)
+
+Scroll down to find the one has **cloudimg** in the middle, end with **.qcow2**
+Then Click on it.
+![cloudimg](assets/screenshot6.png)
+> **Note: Why should I download this specific file?**
+> **cloudimg** means that this file is optimized for the usage of cloud environment. **.qcow2** is one of the formats that is used for virtual disk. Therefore, this is the right option since you will use it for the cloud and virtual environment.
+
+Download will be started. 
+Save it into your local device.
+
+**2. Get a direct link of your Arch Linux image.**
+To continue following steps, you need to have a direct link of your Arch Linux image.
+One of the way to get a proffer link is using Spaces Bucket. Spaces Bucket is a type of storage service that is provided by DigitalOcean. 
+You can create Spaces Bucket, upload your Arch linux image, and get the direct link.
+Click here to see how to create a Spaces Bucket [How to Create a Spaces Bucket](https://docs.digitalocean.com/products/spaces/how-to/create/).
+
+> Note: Why should I have a direct link of the Arch Linux image?
+> To create a droplet, DigitalOcean should be able to find the link of the custom linux image that you provide. However, without direct link that ends by file extension name (**.qcow2** in this case), DigitalOcean will not accept the file you provide, which result to an error. This is why you can't use a link from the Arch Linux page, or google drives.
+
+Once you got the direct link of your Arch Linux image, continue to next steps.
+
+**3. Upload your Arch Linux image.**
+Open Arch Linux and then type and run commands below.
 ```bash
-ssh arch
+doctl compute image create "my_arch_linux" --image-url "https://bucketbucket-1.sfo3.digitaloceanspaces.com/Arch-Linux-x86_64-cloudimg-20240901.259602.qcow2" --region sfo3
 ```
 
-**2. Find your SSH key ID**
-Type command below.
+A drop-down menu will appear
+Click **Spaces Object Storage**
+
+
+```bash
+cat ~/.ssh/your_key.pub
+```
+- This commands will print your public key.
+
+**2. Create cloud-init file**
+Type and run commands below. It will open a text editor.
+```bash
+nvim ~/.ssh/cloud-config.yaml
+```
+- `nvim`: Command to open the Neovim text editor. If Neovim is not installed, you can use another editor like `vim`, or `nano`.
+- `~/.ssh/cloud-config.yaml`: This is the path where the `cloud-config.yaml` file will be created or edited. 
+- This command will open the `cloud-config.yaml` file if it is exist, otherwise create it first.
+
+**3. Type contents for the configuration**
+In the text editor, type contents below.
+```yaml
+#cloud-config
+users:
+  - name: your_user_name
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    ssh-authorized-keys:
+      - your_public_keys
+packages:
+  - ripgrep
+  - rsync
+  - neovim
+  - less
+  - man-db
+  - bash-completion
+  - tmux
+disable_root: true
+```
+- **`users`**: This section defines user accounts that you want to create.
+	- `- name: user-name`: Username for the new user account.  Replace `user-name` with the **actual user name you want to use**.
+	- `shell: /bin/bash`: Sets the default shell for the user.
+	- `sudo: ['ALL=(ALL) NOPASSWD:ALL']`: This command allows the user to run any command with `sudo` permission without a password.
+	- `ssh-authorized-keys`: This is the SSH public key that will be authorized for the user. Replace `your_public_keys` with the **actual public key that you have recalled in the step 1.**
+- **`packages`**: This section lists software packages that will be installed.
+	- `ripgrep`: A search tool.
+	- `rsync`: A utility for transferring and synchronizing files.
+	- `neovim`: An improved version text editor based on Vim.
+	- `less`: A feature to view the contents of files one screen at a time.
+	- `man-db`: Provides the `man` command for the manual.
+- **`disable_root: true`**: This setting disables the root user account for login.
+
+> [Note] Why should we disable a root user?
+> - Disabling the root user requires users to operate with regular user accounts instead. This improves security by forcing users to use `sudo` when they need root permissions. This is similar to User Account Control (UAC) in Windows.
+
+**3. Save file**
+- To exit insert mode, Press **Esc**
+- Then type **:eq**
+- Then press **Enter**
+
+Now you have successfully configured the cloud-init file.
+
+---
+
+### Create a droplet
+Now you are ready to create a droplet through `doctl`. Follow these steps:
+
+**1. Find your SSH key ID**
+You need your SSH key ID to create a droplet.
+Open Arch Linux and then type and run commands below.
 ```bash
 doctl compute ssh-key list
 ```
-This will show you the result like:
+You will see the result like:
 ```bash
 ID          Name         FingerPrint
-43506344    do-key       db:7c:d0:4b:dc:6c:24:ac:2b:5d:c6:9e:d7:bc:d8:18
+43506344    your_key       db:7c:d0:4b:dc:6c:24:ac:2b:5d:c6:9e:d7:bc:d8:18
 ```
+- Later in following steps, you will use your SSH key ID.
 
 **3. Find your Arch Linux image**
-We will reuse the Arch Linux image that you have uploaded through DigitalOcean website for the first droplet creation.
-Type command below.
+You will reuse the Arch Linux image that you have uploaded through DigitalOcean webpage for the first droplet creation.
+Type and run commands below.
 ```bash
 doctl compute image list-user
 ```
-This will show you the result like:
+You will see the result like:
 ```bash
 ID           Name                                                Type      Distribution    Slug    Public    Min Disk
 165084665    Arch-Linux-x86_64-cloudimg-20240901.259602.qcow2    custom    Arch Linux              false     7
 ```
+
+**If you do not have Arch Linux image**
+
 
 **4. Create droplet**
 Type below.

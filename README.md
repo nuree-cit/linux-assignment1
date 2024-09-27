@@ -69,8 +69,9 @@ Type and run commands below.
 sudo mv ~/doctl /usr/local/bin
 ```
 
-> [!NOTE] Why do I need to move it?
-> So that the system can find and run the `doctl` command from anywhere.
+> [!NOTE]
+> Why do I need to move it? 
+> So that the system can find and run the `doctl` command from anywhere. 
 > This is the same action of modifying System variables in Windows OS.
 
 Now you have successfully installed `doctl`.
@@ -84,29 +85,29 @@ Now you have successfully installed `doctl`.
 ## 2. Create an API token
 An API token is an essential security key that you to access DigitalOcean's API. It allows the `doctl` to interact with DigitalOcean programmatically.
 
-**1. Log in to the DigitalOcean control panel**
+### 1. Log in to the DigitalOcean control panel
 Click here: [DigitalOcean Control Panel](https://cloud.digitalocean.com/).
 
-**1. Click API in the left menu**
+### 2. Click API in the left menu
 
 ![API button](assets/screenshot1.png)
 
-**3. Click Generate New Token in the middle of Personal Access Tokens area**
+### 3. Click Generate New Token in the middle of Personal Access Tokens area
 ![generate token](assets/screenshot2.png)
 
-**4. Fill out Token Name and choose options, then Click generate Token
+### 4. Fill out Token Name and choose options, then Click generate Token
 ![options form](assets/screenshot3.png)
 - **Token Name**: Name your token
 - **Expiration**: You can choose depends on usage, the shorter expiry date is considered the more secure in general, but requires frequent renewal.
 - **Scopes**: Since this token is for your own project purpose, choose Full access. Read Only access is recommended when modification should be prevented.
 
-**5. Find the token and Click copy**
+### 5. Find the token and Click copy
 ![Token code](assets/screenshot4.png)
 
->[!Important!] 
+>[!IMPORTANT] 
 >The token is only shown once. If you lose it, you need to create a new one.
 
-**6. Save your token**
+### 6. Save your token
 Open Arch Linux and then type and run commands below. 
 ```bash
 echo "your_token_code" > ~/.ssh/my_token_name.txt
@@ -116,34 +117,38 @@ echo "your_token_code" > ~/.ssh/my_token_name.txt
 
 Now you have successfully created and saved an API Token.
 
+
+### References:
+- [How to Create a Personal Access Token | DigitalOcean Documentation](https://docs.digitalocean.com/reference/api/create-personal-access-token/)
+
 ---
 
 ## 3. Use the API token to authenticate `doctl`
 By authenticating `doctl` with your API token, you will be allowed to work on your DigitalOcean account through `doctl`.
 
-> [!Note] Get ready for your API token
+> [!TIP] 
 > You will be required to type the API token that you just created.
-> Copying it into clipboard before you start this steps. That will make steps easier
+> Copying it into clipboard before you start this steps. That will make steps easier.
 
-**1. Initiate authentication**
+### 1. Initiate authentication
 Open Arch Linux and then type and run commands below.
 ```bash
 doctl auth init --context my_project
 ```
 - Make sure to change `"my_project"` to **your actual project name**.
 
-**2. Type your API token**
+### 2. Type your API token
 Then you will see the result like:
 `Enter your access token:    ✱ required`
 Type your API token, then Press **Enter**
 
->[!Error Handling]
+>[!NOTE]
 >It might show you an error:
->`Error: Unable to initialize DigitalOcean API client: access token is required. (hint: run 'doctl auth init')`
+>	`Error: Unable to initialize DigitalOcean API client: access token is required. (hint: run 'doctl auth init')`
 >If so:
->Run `doctl auth init` and follow step 2 again.
+>	Run `doctl auth init` and follow step 2 again.
 
-**3.Validate** `doctl`
+### 3.Validate `doctl`
 You can check your account details.
 Type and run commands below.
 ```bash

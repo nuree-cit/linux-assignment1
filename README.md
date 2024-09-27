@@ -440,19 +440,6 @@ To exit from the droplet, type `exit` and press **Enter**
 Now you have successfully created a droplet. 
 
 ---
-[arch@bob ~]$ doctl compute droplet list --format Name,PublicIPv4
-Name    Public IPv4
-bob     137.184.86.120
-
-
-```
-ssh -i .ssh/do-key arch@your-droplets-ip-address
-```
-
-
-
-
-
 ### 9. Connect the droplet to SSH `config`
 In the previous step, you have connected to the droplet. However, there is an easier way to connect to the droplet. By connecting a droplet to SSH `config` file, you can connect to your droplet with a simple command like `ssh droplet_name` instead of typing the full SSH command every time.
 

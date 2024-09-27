@@ -1,7 +1,7 @@
 # Setting Up an Arch Linux Droplet on DigitalOcean using `doctl`
 
-### Intro
-#### This instruction will guide you to:
+## Intro
+### This instruction will guide you to:
 1. Install `doctl`
 2. Create an API token
 3. Use the API token to authenticate `doctl`
@@ -12,29 +12,25 @@
 8. Create a droplet
 9. Connect the droplet to SSH `config` 
 
-#### Prerequisites
+### Prerequisites
 - DigitalOcean account
 - Droplet environment with Arch Linux 
 ---
-### 1. Install `doctl`
+## 1. Install `doctl`
 `doctl` is a Command-Line Interface (CLI) tool on DigitalOcean. It allows you to interact with DigitalOcean's API from the command line, making it easier to automate tasks, and manage resources. 
-#### References:
-- [doctl Command Line Interface (CLI) | DigitalOcean Documentation](https://docs.digitalocean.com/reference/doctl/)
-- [How to Install and Configure doctl | DigitalOcean Documentation](https://docs.digitalocean.com/reference/doctl/how-to/install/)
-- [doctl Release Notes :: DigitalOcean Documentation](https://docs.digitalocean.com/release-notes/doctl/)
 
 > **Note**: You will use the Droplet Arch Linux that you have created.
 
-##### 1. Open Terminal
+### 1. Open Terminal
 
-##### 2. Access your Arch Linux
+### 2. Access your Arch Linux
 Type and run commands below. 
 ```bash
 ssh arch
 ```
 - Make sure to change `arch` to **your actual Arch Linux name.**
 
-##### 3. Install `wget`
+### 3. Install `wget`
 Type and run commands below. 
 ```bash
 sudo pacman -Sy wget
@@ -47,7 +43,7 @@ sudo pacman -Sy wget
 	`:: Proceed with installation? [Y/n]`
 	Type `y` and press **Enter**
 
-##### 4. Download the most recent version of `doctl`
+### 4. Download the most recent version of `doctl`
 
 > **Note**: You can check the latest version here: [Release Notes](https://docs.digitalocean.com/release-notes/doctl/) 
 
@@ -58,7 +54,7 @@ wget https://github.com/digitalocean/doctl/releases/download/v1.110.0/doctl-1.11
 ```
 - This link is up to date as of 2024.09.27
 
-###### 5. Extract the binary
+### 5. Extract the binary
 Type and run commands below. 
 ```bash
 tar xf ~/doctl-1.110.0-linux-amd64.tar.gz
@@ -67,7 +63,7 @@ tar xf ~/doctl-1.110.0-linux-amd64.tar.gz
 - `x`: Command that extract archive.
 - `f`: Command that chooses file path and name.
 
-**6. Move the** `doctl` **binary into the path**
+### 6. Move the `doctl` binary into the path
 Type and run commands below. 
 ```bash
 sudo mv ~/doctl /usr/local/bin
@@ -78,9 +74,14 @@ sudo mv ~/doctl /usr/local/bin
 > This is the same action of modifying System variables in Windows OS.
 
 Now you have successfully installed `doctl`.
+### References:
+- [doctl Command Line Interface (CLI) | DigitalOcean Documentation](https://docs.digitalocean.com/reference/doctl/)
+- [How to Install and Configure doctl | DigitalOcean Documentation](https://docs.digitalocean.com/reference/doctl/how-to/install/)
+- [doctl Release Notes :: DigitalOcean Documentation](https://docs.digitalocean.com/release-notes/doctl/)
+- [Command Line Interface (CLI) Reference for doctl | DigitalOcean Documentation](https://docs.digitalocean.com/reference/doctl/reference/)
 
 ---
-### 2. Create an API token
+## 2. Create an API token
 An API token is an essential security key that you to access DigitalOcean's API. It allows the `doctl` to interact with DigitalOcean programmatically.
 
 **1. Log in to the DigitalOcean control panel**
@@ -117,7 +118,7 @@ Now you have successfully created and saved an API Token.
 
 ---
 
-### 3. Use the API token to authenticate `doctl`
+## 3. Use the API token to authenticate `doctl`
 By authenticating `doctl` with your API token, you will be allowed to work on your DigitalOcean account through `doctl`.
 
 > [!Note] Get ready for your API token
@@ -163,7 +164,7 @@ sammy@example.org  10               true              3a56c5e109737c    active
 Now you have successfully authenticated `doctl` with your API Token.
 
 ---
-### 4. Generate SSH keys 
+## 4. Generate SSH keys 
 SSH keys work as a pair which one is public, another is private. Because of that feature, this provides stronger security than passwords methods. 
 
 > [!note] On Arch Linux, `ssh-keygen` is typically included with the OpenSSH package. 
@@ -215,7 +216,7 @@ You will see the result like:
 Now you have successfully created your SSH Keys. 
 
 ---
-### 5. Upload a public key to DigitalOcean
+## 5. Upload a public key to DigitalOcean
 By uploading a public key to DigitalOcean, you will be safely connected to the DigitalOcean including your droplets. 
 
 **1. Upload a public key to DigitalOcean**
@@ -245,7 +246,7 @@ ID          Name        FingerPrint
 Now you have successfully connected your SSH keys to DigitalOcean.
 
 ---
-### 6. Configure the cloud-init file
+## 6. Configure the cloud-init file
 By creating and configuring cloud-init file, you can create the `YAML` file that works as a configuration file of how the droplet should be configured. DIgitalOcean droplets have cloud-init installed by default. 
 
 **1. Get your public key**
@@ -309,7 +310,7 @@ disable_root: true
 Now you have successfully configured the cloud-init file.
 
 ---
-### 7. Upload Arch Linux image to DigitalOcean
+## 7. Upload Arch Linux image to DigitalOcean
 To continue to create a droplet with Arch Linux image, you need to upload the Arch Linux image that you will use since DigitalOcean does not provide it, but allows uploading custom image.  
 
 **1. Get an Arch Linux image.**
@@ -365,7 +366,7 @@ ID           Name             Type      Distribution    Slug    Public    Min Di
 Now you have successfully uploaded your Arch Linux image to the DigitalOcean.
 
 ---
-### 8. Create a droplet
+## 8. Create a droplet
 To create a droplet through `doctl`. Follow these steps:
 
 > Note: Check your Arch Linux status before you continue.
@@ -445,7 +446,7 @@ To exit from the droplet, type `exit` and press **Enter**
 Now you have successfully created a droplet. 
 
 ---
-### 9. Connect the droplet to SSH `config`
+## 9. Connect the droplet to SSH `config`
 In the previous step, you have connected to the droplet. However, there is an easier way to connect to the droplet. By connecting a droplet to SSH `config` file, you can connect to your droplet with a simple command like `ssh droplet_name` instead of typing the full SSH command every time.
 
 **1. Create a**`config` **file**
@@ -494,7 +495,7 @@ Now you have successfully connected your droplet to SSH `config` file.
 
 ---
 
-### Reference
+## Reference
 
 - [2420-notes/week-two.md · main · cit_2420 / 2420-notes-F24 · GitLab](https://gitlab.com/cit2420/2420-notes-f24/-/blob/main/2420-notes/week-two.md) [add wk3 notes](https://gitlab.com/cit2420/2420-notes-f24/-/commit/b7dad161190c2dc42179af14dee9b0fa9705fd62)
 

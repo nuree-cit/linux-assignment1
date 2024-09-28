@@ -19,8 +19,8 @@
 ## 1. Install `doctl`
 `doctl` is a Command-Line Interface (CLI) tool on DigitalOcean. It allows you to interact with DigitalOcean's API from the command line, making it easier to automate tasks, and manage resources. 
 
-> [!NOTE] 
-> You will use the Droplet with an Arch Linux that you have created.
+> [!IMPORTANT] 
+> You will use the Droplet with an Arch Linux that you have created for the following steps.
 
 ### 1. Open Terminal
 
@@ -48,7 +48,7 @@ sudo pacman -Sy wget
 
 ### 4. Download the most recent version of `doctl`
 
-> [!NOTE] 
+> [!TIP] 
 > You can check the latest version here: [Release Notes](https://docs.digitalocean.com/release-notes/doctl/) 
 
 Type and run commands below. 
@@ -73,7 +73,9 @@ Type and run commands below.
 sudo mv ~/doctl /usr/local/bin
 ```
 
-> [!NOTE] Why do I need to move it? 
+> [!NOTE] 
+> Why do I need to move it? 
+> 
 > So that the system can find and run the `doctl` command from anywhere. 
 > 
 > This is the same action of modifying System variables in Windows OS.
@@ -108,7 +110,7 @@ Click here: [DigitalOcean Control Panel](https://cloud.digitalocean.com/).
 ### 5. Find the token and Click copy
 ![Token code](assets/screenshot4.png)
 
->[!IMPORTANT] Save your token!
+>[!IMPORTANT] 
 >The token is only shown once. If you lose it, you need to create a new one.
 
 ### 6. Save your token
@@ -129,7 +131,7 @@ Now you have successfully created and saved an API Token.
 ## 3. Use the API token to authenticate `doctl`
 By authenticating `doctl` with your API token, you will be allowed to work on your DigitalOcean account through `doctl`.
 
-> [!TIP] Get ready for your API token
+> [!TIP] 
 > You will be required to type the API token that you just created.
 > 
 > Copying it into the clipboard before you start this steps. That will make steps easier.
@@ -148,7 +150,7 @@ Then you will see the result like:
 
 Type your API token, then Press **Enter**
 
-> [!NOTE] Error handling
+> [!IMPORTANT] 
 > It might show you an error: 
 > 
 > `Error: Unable to initialize DigitalOcean API client: access token is required. (hint: run 'doctl auth init')`
@@ -186,7 +188,8 @@ Now you have successfully authenticated `doctl` with your API Token.
 ---
 ## 4. Generate SSH keys 
 SSH keys work as a pair which one is public, another is private. Because of that feature, this provides stronger security than passwords methods. 
-> [!NOTE] On Arch Linux, `ssh-keygen` is typically included with the OpenSSH package. 
+> [!TIP] 
+> On Arch Linux, `ssh-keygen` is typically included with the OpenSSH package. 
 
 **Check if `ssh-keygen` is installed**
 ```bash
@@ -208,7 +211,9 @@ ssh-keygen -t ed25519 -f ~/.ssh/your_key -C "your_email"
 - Make sure to change `"your_key"` to **the key name that you want to use**.
 - Make sure to change `"your_email"` to **comments that can identify the key**.
 
-> [!NOTE] Should I create passphrase?
+> [!TIP] 
+> Should I create passphrase?
+> 
 > **You will be asked to:**
 > 
 > `Enter passphrase (empty for no passphrase):`
@@ -331,7 +336,9 @@ disable_root: true
 	- `man-db`: Provides the `man` command for the manual.
 - **`disable_root: true`**: This setting disables the root user account for login.
 
-> [Note] Why should we disable a root user?
+> [!NOTE] 
+> Why should we disable a root user?
+> 
 > - Disabling the root user requires users to operate with regular user accounts instead. This improves security by forcing users to use `sudo` when they need root permissions. This is similar to User Account Control (UAC) in Windows.
 
 ### 4. Save file
@@ -350,7 +357,9 @@ Now you have successfully configured the cloud-init file.
 To continue to create a droplet with Arch Linux image, you need to upload the Arch Linux image that you will use since DigitalOcean does not provide it, but allows uploading custom image.  
 
 ### 1. Get an Arch Linux image
-> [!NOTE] Skip this step if you already have downloaded it in your local device.
+> [!IMPORTANT] 
+> Skip this step if you already have downloaded it in your local device.
+> 
 If not, Click here. [Arch Linux](https://gitlab.archlinux.org/archlinux/arch-boxes/-/packages/).
 
 Click **images** in the most recent row
@@ -360,7 +369,9 @@ Scroll down to find the one has **cloudimg** in the middle, end with **.qcow2**
 
 Then Click on it
 ![cloudimg](assets/screenshot6.png)
-> [!NOTE] Why should I download this specific file?
+> [!NOTE] 
+> Why should I download this specific file?
+> 
 > **cloudimg** means that this file is optimized for the usage of cloud environment. 
 > **.qcow2** is one of the formats that is used for virtual disk. Therefore, this is the right option since you will use it for the cloud and virtual environment.
 
@@ -373,7 +384,9 @@ One of the way to get a proffer link is using Spaces Bucket. Spaces Bucket is a 
 You can create Spaces Bucket, upload your Arch linux image, and get the direct link.
 Click here to see how to create a Spaces Bucket [How to Create a Spaces Bucket](https://docs.digitalocean.com/products/spaces/how-to/create/).
 
-> [!NOTE] Why do I need a direct link of the Arch Linux image?
+> [!NOTE]
+> Why do I need a direct link of the Arch Linux image?
+> 
 > To create a droplet, DigitalOcean should be able to find the link of the custom linux image that you provide. However, DigitalOcean only support links end with some of the file extensions (**.qcow2** in this case). This is why you can't use a link from the other pages such as the google drives.
 
 Once you got the direct link of your Arch Linux image, continue to next steps.
@@ -414,7 +427,9 @@ Now you have successfully uploaded your Arch Linux image to the DigitalOcean.
 ## 8. Create a droplet
 To create a droplet through `doctl`. Follow these steps:
 
-> [!NOTE] Check your Arch Linux status before you continue.
+> [!IMPORTANT]
+> Check your Arch Linux status before you continue.
+> 
 > Log in to the DigitalOcean control panel and check Backups & Snapshots.
 > 
 > Click here: [Backups & Snapshots](https://cloud.digitalocean.com/images/custom_images?i=e4df8b "https://cloud.digitalocean.com/images/custom_images?i=e4df8b").

@@ -9,8 +9,8 @@
 5. Upload a public key to DigitalOcean
 6. Configure the cloud-init File
 7. Upload Arch Linux image to DigitalOcean
-8. Create a droplet
-9. Connect the droplet to SSH `config` 
+8. Create a Droplet
+9. Connect the Droplet to SSH `config` 
 
 ### Prerequisites
 - DigitalOcean account
@@ -20,7 +20,7 @@
 `doctl` is a Command-Line Interface (CLI) tool on DigitalOcean. It allows you to interact with DigitalOcean's API from the command line, making it easier to automate tasks, and manage resources. 
 
 > [!IMPORTANT] 
-> You will use the Droplet with an Arch Linux that you have created for the following steps.
+> For the following steps, You will use the Droplet with an Arch Linux that you have created. 
 
 ### 1. Open Terminal
 
@@ -172,7 +172,7 @@ Email              Droplet Limit    Email Verified    UUID              Status
 sammy@example.org  10               true              3a56c5e109737c    active
 ```
 - `Email`: The identity of the account
-- `Droplet Limit`: The limits of your droplets on your account
+- `Droplet Limit`: The limits of your Droplets on your account
 - `Email Verified`: Your account has been verified
 - `UUID`: The unique identifier used for internal operations in DigitalOcean
 - `Status`: The status of your account
@@ -248,14 +248,14 @@ Now you have successfully created your SSH Keys.
 - [pacman - ArchWiki (archlinux.org)](https://wiki.archlinux.org/title/Pacman)
 ---
 ## 5. Upload a public key to DigitalOcean
-By uploading a public key to DigitalOcean, you will be safely connected to the DigitalOcean including your droplets. 
+By uploading a public key to DigitalOcean, you will be safely connected to the DigitalOcean including your Droplets. 
 
 ### 1. Upload a public key to DigitalOcean
 Open Arch Linux and then type and run commands below.
 ```bash
 doctl compute ssh-key import your_key --public-key-file ~/.ssh/your_key.pub
 ```
-- `compute`: Command that working with droplets
+- `compute`: Command that working with Droplets
 - `ssh-key import`: Command that importing an SSH key.
 - `your_key`: This is the name of SSH key you give within DigitalOcean. 
 - `--public-key-file ~/.ssh/your_key.pub`: get public key from the path.
@@ -283,7 +283,7 @@ Now you have successfully connected your SSH keys to DigitalOcean.
 
 ---
 ## 6. Configure the cloud-init file
-By creating and configuring cloud-init file, you can create the `YAML` file that works as a configuration file of how the droplet should be configured. DIgitalOcean droplets have cloud-init installed by default. 
+By creating and configuring cloud-init file, you can create the `YAML` file that works as a configuration file of how the Droplet should be configured. DIgitalOcean Droplets have cloud-init installed by default. 
 
 ### 1. Get your public key
 To continue these steps, you need your public key that you have created earlier.
@@ -354,7 +354,7 @@ Now you have successfully configured the cloud-init file.
 - [CLI commands - cloud-init 24.3.1 documentation (cloudinit.readthedocs.io)](https://cloudinit.readthedocs.io/en/latest/reference/cli.html)
 ---
 ## 7. Upload Arch Linux image to DigitalOcean
-To continue to create a droplet with Arch Linux image, you need to upload the Arch Linux image that you will use since DigitalOcean does not provide it, but allows uploading custom image.  
+To continue to create a Droplet with Arch Linux image, you need to upload the Arch Linux image that you will use since DigitalOcean does not provide it, but allows uploading custom image.  
 
 ### 1. Get an Arch Linux image
 > [!IMPORTANT] 
@@ -387,7 +387,7 @@ Click here to see how to create a Spaces Bucket [How to Create a Spaces Bucket](
 > [!NOTE]
 > Why do I need a direct link of the Arch Linux image?
 > 
-> To create a droplet, DigitalOcean should be able to find the link of the custom linux image that you provide. However, DigitalOcean only support links end with some of the file extensions (**.qcow2** in this case). This is why you can't use a link from the other pages such as the google drives.
+> To create a Droplet, DigitalOcean should be able to find the link of the custom linux image that you provide. However, DigitalOcean only support links end with some of the file extensions (**.qcow2** in this case). This is why you can't use a link from the other pages such as the google drives.
 
 Once you got the direct link of your Arch Linux image, continue to next steps.
 
@@ -424,8 +424,8 @@ Now you have successfully uploaded your Arch Linux image to the DigitalOcean.
 - [doctl compute image | DigitalOcean Documentation](https://docs.digitalocean.com/reference/doctl/reference/compute/image/)
 - [How to Upload Custom Images | DigitalOcean Documentation](https://docs.digitalocean.com/products/custom-images/how-to/upload/)
 ---
-## 8. Create a droplet
-To create a droplet through `doctl`. Follow these steps:
+## 8. Create a Droplet
+To create a Droplet through `doctl`. Follow these steps:
 
 > [!IMPORTANT]
 > Check your Arch Linux status before you continue.
@@ -438,7 +438,7 @@ To create a droplet through `doctl`. Follow these steps:
 > If it is in **pending**, wait until it is valid. It typically takes less than an hour from the uploading.
 
 ### 1. Find your SSH key ID
-You need your SSH key ID to create a droplet.
+You need your SSH key ID to create a Droplet.
 
 Open Arch Linux and then type and run commands below.
 ```bash
@@ -465,27 +465,27 @@ ID           Name             Type      Distribution    Slug    Public    Min Di
 - Find the Arch Linux image that you have uploaded in the previous step.
 - Later in following steps, you will use your Arch Linux ID.
 
-### 3. Create droplet
+### 3. Create Droplet
 Type and run commands below.
 ```bash
 doctl compute droplet create --image 166365674 --region sfo3 --size s-1vcpu-1gb --ssh-keys 43506344 --user-data-file ~/.ssh/droplet_setting.yaml --wait dropletName
 ```
-- `compute droplet create`: Command to create droplet
-- `dropletName`: Replace this to the **actual droplet name that you want to create**
+- `compute droplet create`: Command to create Droplet
+- `dropletName`: Replace this to the **actual Droplet name that you want to create**
 - `--region sfo3`: Choose region of datacenter in San Francisco, SFO3
 - `--image 166365674`: The ID of Arch Linux image that you want to use. Replace this to the **actual Arch linux image ID from the previous step.**
-- `s`: This means a "Standard" droplet size.
+- `s`: This means a "Standard" Droplet size.
 - `1vcpu-1gb`:  This means 1 virtual CPU for processing tasks and 1 GB of RAM for running applications.
 - `--ssh-keys 43506344`: Replace this to your **actual SSH key from the previous step**
 
-### 4. Connect to the droplet
-To connect to the droplet, you need the ip address.
+### 4. Connect to the Droplet
+To connect to the Droplet, you need the ip address.
 Type and run commands below.
 ```bash
 doctl compute droplet list --format Name,PublicIPv4
 ```
-- `doctl compute droplet list`: Command to list information of droplets.
-- `--format Name,PublicIPv4`: This will return only the names, and the ip addresses of the droplets.
+- `doctl compute droplet list`: Command to list information of Droplets.
+- `--format Name,PublicIPv4`: This will return only the names, and the ip addresses of the Droplets.
 
 Then you will see the result like:
 ```bash
@@ -493,7 +493,7 @@ Name             Public IPv4
 your_droplet     137.184.86.120
 ```
 
-To connect to the droplet via SSH, type and run commands below.
+To connect to the Droplet via SSH, type and run commands below.
 ```bash
 ssh -i .ssh/your_key user_name@your-droplets-ip-address
 ```
@@ -505,9 +505,9 @@ You will see the result like:
 
 `[user_name@droplet_name ~]$`
 
-To exit from the droplet, type `exit` and press **Enter**
+To exit from the Droplet, type `exit` and press **Enter**
 
-Now you have successfully created a droplet. 
+Now you have successfully created a Droplet. 
 
 ### References for the chapter:
 - [doctl compute droplet create | DigitalOcean Documentation](https://docs.digitalocean.com/reference/doctl/reference/compute/droplet/create/)
@@ -515,8 +515,8 @@ Now you have successfully created a droplet.
 - [How To Use Doctl, the Official DigitalOcean Command-Line Client_oneapi_weixin_0010034-开发云 (csdn.net)](https://devpress.csdn.net/cloud/62e7a9be907d7d59d1c8d244.html)
 
 ---
-## 9. Connect the droplet to SSH `config`
-In the previous step, you have connected to the droplet. However, there is an easier way to connect to the droplet. By connecting a droplet to SSH `config` file, you can connect to your droplet with a simple command like `ssh droplet_name` instead of typing the full SSH command every time.
+## 9. Connect the Droplet to SSH `config`
+In the previous step, you have connected to the Droplet. However, there is an easier way to connect to the Droplet. By connecting a Droplet to SSH `config` file, you can connect to your Droplet with a simple command like `ssh droplet_name` instead of typing the full SSH command every time.
 
 ### 1. Create a `config` file
 Open Arch Linux and then type and run commands below. It will open a text editor.
@@ -536,7 +536,7 @@ Host your_droplet_name
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
 ```
-- `Host your_droplet_name`: Replace to **your actual droplet name**
+- `Host your_droplet_name`: Replace to **your actual Droplet name**
 - `User your_user_name`: Replace to **your actual user name**
 - `PreferredAuthentications publickey`: This enforces user to use SSH keys to log in.
 - `IdentityFile ~/.ssh/your_key`: Replace to **your actual private key**
@@ -553,13 +553,13 @@ Type and run commands below.
 ```bash
 ssh your_droplet_name
 ```
-- `your_droplet_name`: Replace to your **actual droplet name.**
+- `your_droplet_name`: Replace to your **actual Droplet name.**
 
 You will see the result like:
 
 `[user_name@droplet_name ~]$`
 
-To exit from the droplet, type `exit` and press **Enter**
+To exit from the Droplet, type `exit` and press **Enter**
 
 Now you have successfully connected your droplet to SSH `config` file. 
 

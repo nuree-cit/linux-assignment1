@@ -19,7 +19,8 @@
 ## 1. Install `doctl`
 `doctl` is a Command-Line Interface (CLI) tool on DigitalOcean. It allows you to interact with DigitalOcean's API from the command line, making it easier to automate tasks, and manage resources. 
 
-> [!NOTE] You will use the Droplet with an Arch Linux that you have created.
+> [!NOTE] 
+> You will use the Droplet with an Arch Linux that you have created.
 
 ### 1. Open Terminal
 
@@ -47,7 +48,8 @@ sudo pacman -Sy wget
 
 ### 4. Download the most recent version of `doctl`
 
-> **Note**: You can check the latest version here: [Release Notes](https://docs.digitalocean.com/release-notes/doctl/) 
+> [!NOTE] 
+> You can check the latest version here: [Release Notes](https://docs.digitalocean.com/release-notes/doctl/) 
 
 Type and run commands below. 
 ```bash
